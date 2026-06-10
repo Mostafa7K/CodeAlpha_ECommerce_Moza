@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#EDE7F6"/>
+  <ellipse cx="200" cy="340" rx="140" ry="20" fill="#D8CCEC" opacity="0.6"/>
+  <rect x="130" y="150" width="140" height="170" rx="10" fill="#9575CD"/>
+  <rect x="130" y="150" width="140" height="28" rx="10" fill="#B39DDB"/>
+  <rect x="170" y="110" width="60" height="50" rx="6" fill="#7E57C2"/>
+  <rect x="195" y="70" width="10" height="50" fill="#5D4037"/>
+  <path d="M200 70 C 195 55, 210 45, 200 30 C 190 45, 205 55, 200 70 Z" fill="#FFB74D"/>
+  <path d="M200 60 C 197 50, 206 44, 200 35 C 194 44, 203 50, 200 60 Z" fill="#FFE0B2" opacity="0.8"/>
+  <g fill="#7E57C2" opacity="0.7">
+    <circle cx="320" cy="80" r="6"/>
+    <circle cx="340" cy="100" r="4"/>
+    <circle cx="60" cy="60" r="5"/>
+    <circle cx="80" cy="90" r="3"/>
+  </g>
+  <text x="200" y="250" font-family="Georgia, serif" font-size="22" fill="#FFFFFF" text-anchor="middle" font-weight="600">Lavender Calm</text>
+</svg>

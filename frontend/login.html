@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In — Moza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-page="login.html">
+
+  <header id="site-header" class="site-header"></header>
+
+  <main>
+    <div class="container auth-wrapper">
+      <div class="card auth-card">
+        <div class="auth-card-header">
+          <h1>Welcome back</h1>
+          <p>Log in to your Moza account to check out faster.</p>
+        </div>
+
+        <div id="form-alert"></div>
+
+        <form id="login-form" class="form" novalidate>
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+          </div>
+
+          <div class="form-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required minlength="6" />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn">
+            Log In
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Don't have an account? <a href="register.html">Create one</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>
