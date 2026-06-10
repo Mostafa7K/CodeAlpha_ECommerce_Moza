@@ -1,4 +1,4 @@
-# Moza — Hand-Poured Candle Co.
+# Moza, Hand-Poured Candle Co.
 
 A full-stack e-commerce site for the Moza handmade candle brand. The repo is a
 monorepo containing a completely separate Express/MySQL backend API and a
