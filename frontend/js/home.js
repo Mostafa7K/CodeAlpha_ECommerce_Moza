@@ -86,6 +86,28 @@ function renderProducts(products) {
   });
 }
 
+const heroStatsEl = document.getElementById('hero-stats');
+
+async function loadStats() {
+  if (!heroStatsEl) return;
+
+  try {
+    const data = await api.get('/orders/stats');
+
+    if (data.totalCandlesSold > 0) {
+      const formattedCount = new Intl.NumberFormat('en-US').format(data.totalCandlesSold);
+      heroStatsEl.innerHTML = `
+        <div class="hero-stats">
+          <span class="pulse-dot"></span>
+          <span>${formattedCount}+ candles already lit by happy customers — grab yours today!</span>
+        </div>
+      `;
+    }
+  } catch (err) {
+    // Stats are a nice-to-have; fail silently if unavailable.
+  }
+}
+
 async function loadProducts() {
   try {
     const data = await api.get('/products');
@@ -103,3 +125,4 @@ async function loadProducts() {
 }
 
 loadProducts();
+loadStats();

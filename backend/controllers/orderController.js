@@ -1,5 +1,20 @@
 import pool from '../config/db.js';
 
+export async function getOrderStats(req, res) {
+  try {
+    const [[orderRow]] = await pool.query('SELECT COUNT(*) AS totalOrders FROM orders');
+    const [[itemRow]] = await pool.query('SELECT COALESCE(SUM(quantity), 0) AS totalCandlesSold FROM order_items');
+
+    return res.status(200).json({
+      totalOrders: orderRow.totalOrders,
+      totalCandlesSold: Number(itemRow.totalCandlesSold)
+    });
+  } catch (err) {
+    console.error('Get order stats error:', err);
+    return res.status(500).json({ message: 'Unable to fetch order statistics at this time.' });
+  }
+}
+
 export async function createOrder(req, res) {
   const { items } = req.body;
 

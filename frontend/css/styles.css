@@ -576,6 +576,35 @@ select:focus {
   margin-top: 0.5rem;
 }
 
+.hero-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card) / 0.7);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  width: fit-content;
+}
+
+.hero-stats .pulse-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: hsl(var(--success));
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
 /* ---------------------------------------------------------------------- */
 /* Product grid & cards                                                    */
 /* ---------------------------------------------------------------------- */
