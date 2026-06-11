@@ -51,6 +51,47 @@
 }
 
 /* ---------------------------------------------------------------------- */
+/* Dark mode palette                                                       */
+/* ---------------------------------------------------------------------- */
+
+[data-theme="dark"] {
+  --background: 100 18% 8%;
+  --foreground: 44 40% 92%;
+
+  --card: 100 15% 12%;
+  --card-foreground: 44 40% 92%;
+
+  --popover: 100 15% 12%;
+  --popover-foreground: 44 40% 92%;
+
+  --primary: var(--moza-olive-green);
+  --primary-foreground: 100 18% 8%;
+
+  --secondary: var(--moza-flame-brown);
+  --secondary-foreground: 44 40% 96%;
+
+  --muted: 100 13% 16%;
+  --muted-foreground: 44 16% 65%;
+
+  --accent: var(--moza-flame-gold);
+  --accent-foreground: 100 18% 8%;
+
+  --destructive: 4 65% 55%;
+  --destructive-foreground: 44 44% 97%;
+
+  --success: 82 35% 50%;
+  --success-foreground: 100 18% 8%;
+
+  --border: 100 12% 22%;
+  --input: 100 12% 22%;
+  --ring: var(--moza-flame-gold);
+
+  --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.35);
+  --shadow-md: 0 8px 20px -4px hsl(0 0% 0% / 0.5), 0 2px 6px -2px hsl(0 0% 0% / 0.35);
+  --shadow-lg: 0 16px 40px -10px hsl(0 0% 0% / 0.6);
+}
+
+/* ---------------------------------------------------------------------- */
 /* Reset & base                                                            */
 /* ---------------------------------------------------------------------- */
 
@@ -74,6 +115,22 @@ body {
   color: hsl(var(--foreground));
   background-color: hsl(var(--background));
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body,
+.site-header,
+.site-footer,
+.card,
+.product-card,
+.btn,
+input,
+textarea,
+select,
+.nav-links a,
+.cart-button,
+.alert {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 img {
@@ -197,6 +254,7 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   height: 4.25rem;
 }
 
@@ -204,6 +262,7 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  flex-shrink: 0;
   font-family: 'Poppins', 'Inter', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
@@ -227,6 +286,11 @@ h1, h2, h3, h4 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+[data-theme="dark"] .brand-mark {
+  background-color: hsl(var(--moza-cream));
+  box-shadow: 0 0 0 4px hsl(var(--moza-flame-gold) / 0.16), 0 0 20px 4px hsl(var(--moza-flame-gold) / 0.35);
 }
 
 .brand-wordmark {
@@ -278,7 +342,80 @@ h1, h2, h3, h4 {
 .nav-actions {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.75rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Theme toggle                                                            */
+/* ---------------------------------------------------------------------- */
+
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 3.4rem;
+  height: 1.9rem;
+  padding: 0.18rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background: linear-gradient(135deg, hsl(var(--moza-olive-green) / 0.22), hsl(var(--moza-flame-gold) / 0.22));
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  border-color: hsl(var(--ring));
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 0.18rem;
+  left: 0.18rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background-color: hsl(var(--card));
+  box-shadow: var(--shadow-sm);
+  transform: translateX(0);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+}
+
+[data-theme="dark"] .theme-toggle-thumb {
+  transform: translateX(1.5rem);
+}
+
+.theme-toggle-thumb svg {
+  position: absolute;
+  width: 0.95rem;
+  height: 0.95rem;
+  transition: opacity 0.25s ease, transform 0.35s ease;
+}
+
+.theme-toggle-thumb .icon-sun {
+  color: hsl(var(--moza-flame-gold));
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.theme-toggle-thumb .icon-moon {
+  color: hsl(var(--moza-olive-green));
+  opacity: 0;
+  transform: scale(0.4) rotate(-90deg);
+}
+
+[data-theme="dark"] .theme-toggle-thumb .icon-sun {
+  opacity: 0;
+  transform: scale(0.4) rotate(90deg);
+}
+
+[data-theme="dark"] .theme-toggle-thumb .icon-moon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
 }
 
 .cart-button {
@@ -288,6 +425,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
+  flex-shrink: 0;
   border-radius: var(--radius);
   border: 1px solid hsl(var(--border));
   background-color: hsl(var(--card));
@@ -321,9 +459,11 @@ h1, h2, h3, h4 {
 .user-menu {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.5rem;
   font-size: 0.85rem;
   color: hsl(var(--muted-foreground));
+  white-space: nowrap;
 }
 
 .menu-toggle {
@@ -778,7 +918,12 @@ select:focus {
 .product-card-actions {
   padding: 0 1.1rem 1.1rem;
   display: flex;
+  flex-direction: column;
   gap: 0.6rem;
+}
+
+.product-card-actions .btn {
+  width: 100%;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -1241,5 +1386,46 @@ select:focus {
 
   .form-row {
     flex-direction: column;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .brand-wordmark {
+    display: none;
+  }
+
+  .user-menu span {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar {
+    gap: 0.4rem;
+  }
+
+  .nav-actions {
+    gap: 0.35rem;
+  }
+
+  .theme-toggle {
+    width: 2.85rem;
+    height: 1.65rem;
+  }
+
+  .theme-toggle-thumb {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  [data-theme="dark"] .theme-toggle-thumb {
+    transform: translateX(1.2rem);
+  }
+
+  .theme-toggle-thumb svg {
+    width: 0.8rem;
+    height: 0.8rem;
   }
 }

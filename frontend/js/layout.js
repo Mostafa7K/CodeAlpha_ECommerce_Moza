@@ -3,6 +3,7 @@
 
 import { getCartCount, onCartChange } from './cart.js';
 import { getCurrentUser, logout } from './auth.js';
+import { themeToggleMarkup, initThemeToggle } from './theme.js';
 
 const NAV_LINKS = [
   { href: 'index.html', label: 'Home' },
@@ -28,6 +29,7 @@ function buildHeader() {
         ${links}
       </nav>
       <div class="nav-actions">
+        ${themeToggleMarkup()}
         <div class="user-menu" id="user-menu"></div>
         <a href="cart.html" class="cart-button" aria-label="View cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -123,6 +125,7 @@ export function renderLayout() {
 
   updateCartBadge();
   updateUserMenu();
+  initThemeToggle();
 
   onCartChange(updateCartBadge);
 }
