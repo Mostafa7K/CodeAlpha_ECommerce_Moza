@@ -5,42 +5,49 @@
    ========================================================================= */
 
 :root {
-  --background: 32 38% 97%;
-  --foreground: 24 12% 14%;
+  /* Moza brand palette */
+  --moza-cream: 44 44% 92%;
+  --moza-deep-olive: 98 19% 31%;
+  --moza-olive-green: 82 31% 51%;
+  --moza-flame-brown: 26 37% 51%;
+  --moza-flame-gold: 41 100% 62%;
 
-  --card: 0 0% 100%;
-  --card-foreground: 24 12% 14%;
+  --background: var(--moza-cream);
+  --foreground: var(--moza-deep-olive);
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 24 12% 14%;
+  --card: 44 40% 97%;
+  --card-foreground: var(--moza-deep-olive);
 
-  --primary: 22 38% 26%;
-  --primary-foreground: 32 38% 97%;
+  --popover: 44 40% 97%;
+  --popover-foreground: var(--moza-deep-olive);
 
-  --secondary: 30 22% 92%;
-  --secondary-foreground: 24 12% 14%;
+  --primary: var(--moza-deep-olive);
+  --primary-foreground: 44 44% 97%;
 
-  --muted: 30 18% 93%;
-  --muted-foreground: 24 8% 42%;
+  --secondary: var(--moza-flame-brown);
+  --secondary-foreground: 44 44% 97%;
 
-  --accent: 88 18% 33%;
-  --accent-foreground: 32 38% 97%;
+  --muted: 44 28% 89%;
+  --muted-foreground: 98 12% 42%;
+
+  --accent: var(--moza-flame-gold);
+  --accent-foreground: 98 19% 22%;
 
   --destructive: 4 70% 45%;
-  --destructive-foreground: 32 38% 97%;
+  --destructive-foreground: 44 44% 97%;
 
-  --success: 122 30% 32%;
-  --success-foreground: 32 38% 97%;
+  --success: 82 35% 32%;
+  --success-foreground: 44 44% 97%;
 
-  --border: 30 18% 87%;
-  --input: 30 18% 87%;
-  --ring: 22 38% 26%;
+  --border: 82 25% 80%;
+  --input: 82 25% 80%;
+  --ring: var(--moza-flame-gold);
 
-  --radius: 0.6rem;
+  --radius: 1rem;
 
-  --shadow-sm: 0 1px 2px 0 hsl(24 12% 14% / 0.04);
-  --shadow-md: 0 4px 12px -2px hsl(24 12% 14% / 0.08), 0 2px 4px -2px hsl(24 12% 14% / 0.04);
-  --shadow-lg: 0 12px 32px -8px hsl(24 12% 14% / 0.16);
+  --shadow-sm: 0 1px 2px 0 hsl(98 19% 20% / 0.05);
+  --shadow-md: 0 8px 20px -4px hsl(98 19% 20% / 0.10), 0 2px 6px -2px hsl(98 19% 20% / 0.06);
+  --shadow-lg: 0 16px 40px -10px hsl(98 19% 20% / 0.18);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -88,10 +95,11 @@ ul {
 }
 
 h1, h2, h3, h4 {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.2;
+  color: hsl(var(--moza-deep-olive));
 }
 
 :focus-visible {
@@ -112,6 +120,37 @@ h1, h2, h3, h4 {
 
 .section {
   padding-block: 3.5rem;
+}
+
+/* Soft, organic section transition — used for the "Why Moza?" block so large
+   page sections meet with a curved edge instead of a hard rule. */
+#about {
+  position: relative;
+  margin-top: 2.5rem;
+  padding-block: 5rem;
+  background-color: #E7E6D0;
+}
+
+#about::before,
+#about::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+#about::before {
+  top: -59px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C360,70 1080,-10 1440,30 L1440,60 L0,60 Z' fill='%23E7E6D0'/%3E%3C/svg%3E");
+}
+
+#about::after {
+  bottom: -59px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C360,-10 1080,70 1440,30 L1440,0 L0,0 Z' fill='%23E7E6D0'/%3E%3C/svg%3E");
 }
 
 .section-header {
@@ -165,7 +204,7 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Poppins', 'Inter', sans-serif;
   font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -176,13 +215,39 @@ h1, h2, h3, h4 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 999px;
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  font-size: 1rem;
-  font-weight: 700;
+  overflow: hidden;
+  background-color: hsl(var(--background));
+  flex-shrink: 0;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-wordmark {
+  height: 1.6rem;
+  width: auto;
+  display: block;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.footer-logo .brand-mark {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.footer-logo .brand-wordmark {
+  height: 2.25rem;
 }
 
 .nav-links {
@@ -193,14 +258,21 @@ h1, h2, h3, h4 {
 
 .nav-links a {
   font-size: 0.9rem;
-  font-weight: 500;
-  color: hsl(var(--muted-foreground));
-  transition: color 0.15s ease;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  color: hsl(var(--foreground) / 0.75);
+  transition: color 0.18s ease, background-color 0.18s ease;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a:hover {
   color: hsl(var(--foreground));
+  background-color: hsl(var(--accent) / 0.18);
+}
+
+.nav-links a.active {
+  color: hsl(var(--primary-foreground));
+  background-color: hsl(var(--primary));
 }
 
 .nav-actions {
@@ -268,13 +340,13 @@ h1, h2, h3, h4 {
   justify-content: center;
   gap: 0.5rem;
   white-space: nowrap;
-  border-radius: var(--radius);
+  border-radius: 999px;
   border: 1px solid transparent;
   font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.6rem 1.1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease, transform 0.18s ease;
   line-height: 1.2;
 }
 
@@ -289,17 +361,20 @@ h1, h2, h3, h4 {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: hsl(var(--primary) / 0.9);
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }
 
 .btn-secondary {
   background-color: hsl(var(--secondary));
   color: hsl(var(--secondary-foreground));
-  border-color: hsl(var(--border));
+  border-color: hsl(var(--secondary));
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: hsl(var(--border));
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  border-color: hsl(var(--accent));
 }
 
 .btn-outline {
@@ -309,7 +384,8 @@ h1, h2, h3, h4 {
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: hsl(var(--secondary));
+  background-color: hsl(var(--accent) / 0.18);
+  border-color: hsl(var(--accent));
 }
 
 .btn-ghost {
@@ -318,7 +394,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background-color: hsl(var(--secondary));
+  background-color: hsl(var(--accent) / 0.18);
 }
 
 .btn-destructive {
@@ -487,9 +563,9 @@ select:focus {
 }
 
 .alert-info {
-  background-color: hsl(var(--accent) / 0.08);
-  border-color: hsl(var(--accent) / 0.25);
-  color: hsl(var(--accent));
+  background-color: hsl(var(--accent) / 0.16);
+  border-color: hsl(var(--accent) / 0.4);
+  color: hsl(var(--secondary));
 }
 
 /* ---------------------------------------------------------------------- */
@@ -534,10 +610,10 @@ select:focus {
 /* ---------------------------------------------------------------------- */
 
 .hero {
+  position: relative;
   padding-block: 4.5rem;
-  border-bottom: 1px solid hsl(var(--border));
   background:
-    radial-gradient(circle at 85% 20%, hsl(var(--accent) / 0.08), transparent 45%),
+    radial-gradient(circle at 85% 20%, hsl(var(--accent) / 0.16), transparent 45%),
     radial-gradient(circle at 10% 80%, hsl(var(--primary) / 0.06), transparent 40%);
 }
 
@@ -553,10 +629,19 @@ select:focus {
   align-items: center;
   gap: 0.4rem;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: hsl(var(--accent));
+  color: hsl(var(--secondary));
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: hsl(var(--accent));
 }
 
 .hero h1 {

@@ -20,9 +20,9 @@ function buildHeader() {
 
   return `
     <div class="container navbar">
-      <a href="index.html" class="brand">
-        <span class="brand-mark">M</span>
-        <span>Moza</span>
+      <a href="index.html" class="brand" aria-label="Moza — home">
+        <span class="brand-mark"><img src="assets/moza.pfp3.png" alt="" /></span>
+        <img src="assets/logo.typo2.png" alt="Moza" class="brand-wordmark" />
       </a>
       <nav class="nav-links">
         ${links}
@@ -48,9 +48,9 @@ function buildFooter() {
   return `
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="brand">
-          <span class="brand-mark">M</span>
-          <span>Moza</span>
+        <a href="index.html" class="brand footer-logo" aria-label="Moza — home">
+          <span class="brand-mark"><img src="assets/moza.pfp3.png" alt="" /></span>
+          <img src="assets/logo.typo2.png" alt="Moza" class="brand-wordmark" />
         </a>
         <p>Small-batch, hand-poured candles made with natural soy wax and thoughtfully chosen fragrance oils.</p>
       </div>
