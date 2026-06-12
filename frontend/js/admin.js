@@ -78,9 +78,11 @@ function renderProducts(products) {
         ? `<span class="badge badge-warning">${product.stock_quantity}</span>`
         : product.stock_quantity}</td>
       <td>${escapeHtml(product.burn_time)}</td>
-      <td class="admin-row-actions">
-        <button class="btn btn-outline btn-sm" data-action="edit" data-id="${product.id}">Edit</button>
-        <button class="btn btn-destructive btn-sm" data-action="delete" data-id="${product.id}">Delete</button>
+      <td>
+        <div class="admin-row-actions">
+          <button class="btn btn-outline btn-sm" data-action="edit" data-id="${product.id}">Edit</button>
+          <button class="btn btn-destructive btn-sm" data-action="delete" data-id="${product.id}">Delete</button>
+        </div>
       </td>
     </tr>
   `).join('');
