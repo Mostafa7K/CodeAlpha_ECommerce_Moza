@@ -1529,6 +1529,36 @@ select:focus {
   color: hsl(var(--muted-foreground));
 }
 
+.admin-table-products {
+  table-layout: fixed;
+}
+
+.admin-table-products .col-thumb {
+  width: 68px;
+}
+
+.admin-table-products .col-name {
+  width: 32%;
+}
+
+.admin-table-products .col-price,
+.admin-table-products .col-stock {
+  width: 12%;
+}
+
+.admin-table-products .col-burn {
+  width: 22%;
+}
+
+.admin-table-products .col-actions {
+  width: 160px;
+}
+
+.admin-table-products td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .admin-thumb {
   width: 48px;
   height: 48px;
