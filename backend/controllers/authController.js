@@ -8,10 +8,14 @@ const TOKEN_TTL = process.env.JWT_EXPIRES_IN || '7d';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    // Cross-site cookies (e.g. Vercel frontend <-> Render backend) require
+    // SameSite=None, which itself requires Secure. Local dev (http) keeps
+    // Lax since SameSite=None without Secure is rejected by browsers.
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   };
 }
