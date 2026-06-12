@@ -11,7 +11,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://127.0.0.1:5500';
+const CLIENT_ORIGIN = process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN || 'http://127.0.0.1:5500';
 
 app.use(cors({
   origin: CLIENT_ORIGIN,
@@ -40,5 +40,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Moza backend running on http://localhost:${PORT}`);
+  console.log(`Server running securely on port ${PORT}`);
 });
