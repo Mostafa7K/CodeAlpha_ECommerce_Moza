@@ -9,7 +9,7 @@
 //    `window.__MOZA_API_BASE_URL__` before this module loads.
 
 const LOCAL_API_BASE_URL = 'http://localhost:5000/api';
-const PRODUCTION_API_BASE_URL = 'https://api.moza-candles.com/api';
+const PRODUCTION_API_BASE_URL = 'https://codealpha-ecommerce-moza.onrender.com/api';
 
 const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
