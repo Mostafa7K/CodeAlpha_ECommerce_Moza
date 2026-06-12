@@ -2,7 +2,9 @@
 // All requests include credentials so the HttpOnly JWT cookie set by the
 // backend is sent automatically with every request.
 
-export const API_BASE_URL = 'http://localhost:5000/api';
+import { API_BASE_URL } from './config.js';
+
+export { API_BASE_URL };
 
 class ApiError extends Error {
   constructor(message, status) {
