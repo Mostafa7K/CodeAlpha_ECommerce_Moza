@@ -5,6 +5,8 @@ import { getCartCount, onCartChange } from './cart.js';
 import { getCurrentUser, logout } from './auth.js';
 import { themeToggleMarkup, initThemeToggle } from './theme.js';
 
+const ADMIN_EMAILS = ['most.kanaan7@gmail.com', 'zeinabajrouche123@gmail.com'];
+
 const NAV_LINKS = [
   { href: 'index.html', label: 'Home' },
   { href: 'index.html#shop', label: 'Shop' },
@@ -90,9 +92,16 @@ function updateCartBadge() {
 async function updateUserMenu() {
   const userMenu = document.getElementById('user-menu');
   const footerAccountLinks = document.getElementById('footer-account-links');
+  const navLinks = document.querySelector('.nav-links');
   if (!userMenu) return;
 
   const user = await getCurrentUser();
+
+  if (user && navLinks && ADMIN_EMAILS.includes(user.email?.toLowerCase())) {
+    const currentPage = document.body.dataset.page || '';
+    const isActive = currentPage.startsWith('admin.html');
+    navLinks.insertAdjacentHTML('beforeend', `<a href="admin.html" class="${isActive ? 'active' : ''}">Admin</a>`);
+  }
 
   if (user) {
     userMenu.innerHTML = `

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      var stored = localStorage.getItem('moza-theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <title>Admin Dashboard — Moza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Hide the dashboard until the admin guard confirms access, to avoid a
+       flash of protected content for unauthorized visitors. */
+    html:not(.admin-authorized) .admin-page {
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body data-page="admin.html">
+
+  <header id="site-header" class="site-header"></header>
+
+  <main class="admin-page">
+    <section class="section">
+      <div class="container">
+        <div class="section-header" style="text-align:left; align-items:flex-start;">
+          <h2>Admin Dashboard</h2>
+          <p>Manage products, review orders, and track sales performance.</p>
+        </div>
+
+        <div id="admin-alert"></div>
+
+        <!-- Sales Analytics -->
+        <div class="admin-stats-grid" id="admin-stats">
+          <div class="card admin-stat-card">
+            <div class="card-content">
+              <span class="admin-stat-label">Total Revenue</span>
+              <span class="admin-stat-value" id="stat-revenue">—</span>
+            </div>
+          </div>
+          <div class="card admin-stat-card">
+            <div class="card-content">
+              <span class="admin-stat-label">Active Orders</span>
+              <span class="admin-stat-value" id="stat-orders">—</span>
+            </div>
+          </div>
+          <div class="card admin-stat-card">
+            <div class="card-content">
+              <span class="admin-stat-label">Low Stock Alerts</span>
+              <span class="admin-stat-value" id="stat-low-stock">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          <div class="card admin-panel">
+            <div class="card-header">
+              <h3 class="card-title">Low Stock Items</h3>
+              <p class="card-description">Products at or below the low-stock threshold.</p>
+            </div>
+            <div class="card-content">
+              <ul class="admin-list" id="low-stock-list">
+                <li class="admin-empty">Loading…</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card admin-panel">
+            <div class="card-header">
+              <h3 class="card-title">Top-Selling Candles</h3>
+              <p class="card-description">Best performers by units sold.</p>
+            </div>
+            <div class="card-content">
+              <ul class="admin-list" id="top-selling-list">
+                <li class="admin-empty">Loading…</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Inventory -->
+        <div class="card admin-section-card">
+          <div class="card-header">
+            <h3 class="card-title" id="product-form-title">Add New Product</h3>
+            <p class="card-description">Upload an image and product details. Images are optimized automatically.</p>
+          </div>
+          <div class="card-content">
+            <form id="product-form" class="form" enctype="multipart/form-data">
+              <input type="hidden" id="product-id" value="" />
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="product-name">Name</label>
+                  <input type="text" id="product-name" name="name" required />
+                </div>
+                <div class="form-field">
+                  <label for="product-burn-time">Burn Time</label>
+                  <input type="text" id="product-burn-time" name="burn_time" placeholder="e.g. 40 hours" required />
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="product-description">Description</label>
+                <textarea id="product-description" name="description" rows="3" required></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="product-price">Price (USD)</label>
+                  <input type="number" id="product-price" name="price" min="0" step="0.01" required />
+                </div>
+                <div class="form-field">
+                  <label for="product-stock">Stock Quantity</label>
+                  <input type="number" id="product-stock" name="stock_quantity" min="0" step="1" required />
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="product-image">Product Image</label>
+                <input type="file" id="product-image" name="image" accept="image/*" />
+                <span class="form-hint" id="image-hint">Required for new products. JPG, PNG, or WEBP — optimized automatically.</span>
+              </div>
+              <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary" id="product-submit-btn">Add Product</button>
+                <button type="button" class="btn btn-outline hidden" id="product-cancel-btn">Cancel Edit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card admin-section-card">
+          <div class="card-header">
+            <h3 class="card-title">Product Inventory</h3>
+            <p class="card-description">All candles currently in the catalog.</p>
+          </div>
+          <div class="card-content admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Burn Time</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body">
+                <tr><td colspan="6" class="admin-empty">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="card admin-section-card">
+          <div class="card-header">
+            <h3 class="card-title">Customer Orders</h3>
+            <p class="card-description">All checkout activity, most recent first.</p>
+          </div>
+          <div class="card-content admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-body">
+                <tr><td colspan="6" class="admin-empty">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script type="module" src="js/layout.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

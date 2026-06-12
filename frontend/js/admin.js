@@ -1,0 +1,228 @@
+// Admin dashboard logic — product inventory CRUD, orders view, and sales
+// analytics. Access is enforced by admin-guard.js before this module runs.
+
+import { guardAdminPage } from './admin-guard.js';
+import { api, ApiError } from './api.js';
+import { formatCurrency, escapeHtml } from './format.js';
+
+const alertEl = document.getElementById('admin-alert');
+
+const form = document.getElementById('product-form');
+const formTitle = document.getElementById('product-form-title');
+const idField = document.getElementById('product-id');
+const nameField = document.getElementById('product-name');
+const descriptionField = document.getElementById('product-description');
+const priceField = document.getElementById('product-price');
+const stockField = document.getElementById('product-stock');
+const burnTimeField = document.getElementById('product-burn-time');
+const imageField = document.getElementById('product-image');
+const imageHint = document.getElementById('image-hint');
+const submitBtn = document.getElementById('product-submit-btn');
+const cancelBtn = document.getElementById('product-cancel-btn');
+
+const productsTableBody = document.getElementById('products-table-body');
+const ordersTableBody = document.getElementById('orders-table-body');
+const statRevenue = document.getElementById('stat-revenue');
+const statOrders = document.getElementById('stat-orders');
+const statLowStock = document.getElementById('stat-low-stock');
+const lowStockList = document.getElementById('low-stock-list');
+const topSellingList = document.getElementById('top-selling-list');
+
+function showAlert(message, type = 'error') {
+  alertEl.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function clearAlert() {
+  alertEl.innerHTML = '';
+}
+
+function resetForm() {
+  form.reset();
+  idField.value = '';
+  formTitle.textContent = 'Add New Product';
+  submitBtn.textContent = 'Add Product';
+  cancelBtn.classList.add('hidden');
+  imageField.required = true;
+  imageHint.textContent = 'Required for new products. JPG, PNG, or WEBP — optimized automatically.';
+}
+
+function startEdit(product) {
+  idField.value = product.id;
+  nameField.value = product.name;
+  descriptionField.value = product.description;
+  priceField.value = product.price;
+  stockField.value = product.stock_quantity;
+  burnTimeField.value = product.burn_time;
+  imageField.value = '';
+  imageField.required = false;
+  imageHint.textContent = 'Leave empty to keep the current image.';
+  formTitle.textContent = `Edit Product: ${product.name}`;
+  submitBtn.textContent = 'Save Changes';
+  cancelBtn.classList.remove('hidden');
+  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderProducts(products) {
+  if (products.length === 0) {
+    productsTableBody.innerHTML = '<tr><td colspan="6" class="admin-empty">No products yet.</td></tr>';
+    return;
+  }
+
+  productsTableBody.innerHTML = products.map((product) => `
+    <tr>
+      <td><img class="admin-thumb" src="${escapeHtml(product.image_url)}" alt="" /></td>
+      <td>${escapeHtml(product.name)}</td>
+      <td>${formatCurrency(product.price)}</td>
+      <td>${product.stock_quantity <= 5
+        ? `<span class="badge badge-warning">${product.stock_quantity}</span>`
+        : product.stock_quantity}</td>
+      <td>${escapeHtml(product.burn_time)}</td>
+      <td class="admin-row-actions">
+        <button class="btn btn-outline btn-sm" data-action="edit" data-id="${product.id}">Edit</button>
+        <button class="btn btn-destructive btn-sm" data-action="delete" data-id="${product.id}">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderOrders(orders) {
+  if (orders.length === 0) {
+    ordersTableBody.innerHTML = '<tr><td colspan="6" class="admin-empty">No orders yet.</td></tr>';
+    return;
+  }
+
+  ordersTableBody.innerHTML = orders.map((order) => {
+    const items = order.items.map((item) => `${item.quantity} × ${escapeHtml(item.productName)}`).join('<br />');
+    return `
+      <tr>
+        <td>#${order.id}</td>
+        <td>${escapeHtml(order.customerName)}<br /><span class="admin-muted">${escapeHtml(order.customerEmail)}</span></td>
+        <td>${items}</td>
+        <td>${formatCurrency(order.totalAmount)}</td>
+        <td><span class="badge badge-outline">${escapeHtml(order.status)}</span></td>
+        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderStats(stats) {
+  statRevenue.textContent = formatCurrency(stats.totalRevenue);
+  statOrders.textContent = stats.totalOrders;
+  statLowStock.textContent = stats.lowStock.length;
+
+  lowStockList.innerHTML = stats.lowStock.length === 0
+    ? '<li class="admin-empty">All products are well stocked.</li>'
+    : stats.lowStock.map((item) => `
+        <li>
+          <span>${escapeHtml(item.name)}</span>
+          <span class="badge badge-warning">${item.stock_quantity} left</span>
+        </li>
+      `).join('');
+
+  topSellingList.innerHTML = stats.topSelling.length === 0
+    ? '<li class="admin-empty">No sales yet.</li>'
+    : stats.topSelling.map((item) => `
+        <li>
+          <span>${escapeHtml(item.name)}</span>
+          <span class="badge badge-success">${item.unitsSold} sold</span>
+        </li>
+      `).join('');
+}
+
+async function loadProducts() {
+  const data = await api.get('/products');
+  renderProducts(data.products);
+  return data.products;
+}
+
+async function loadOrders() {
+  const data = await api.get('/admin/orders');
+  renderOrders(data.orders);
+}
+
+async function loadStats() {
+  const data = await api.get('/admin/stats');
+  renderStats(data);
+}
+
+async function refreshAll() {
+  await Promise.all([loadProducts(), loadOrders(), loadStats()]);
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  clearAlert();
+
+  const id = idField.value;
+  const formData = new FormData(form);
+
+  if (!imageField.files.length) {
+    formData.delete('image');
+  }
+
+  submitBtn.disabled = true;
+
+  try {
+    if (id) {
+      await api.uploadPut(`/admin/products/${id}`, formData);
+      showAlert('Product updated successfully.', 'success');
+    } else {
+      await api.upload('/admin/products', formData);
+      showAlert('Product added successfully.', 'success');
+    }
+
+    resetForm();
+    await Promise.all([loadProducts(), loadStats()]);
+  } catch (err) {
+    showAlert(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
+cancelBtn.addEventListener('click', () => {
+  resetForm();
+  clearAlert();
+});
+
+productsTableBody.addEventListener('click', async (event) => {
+  const button = event.target.closest('button[data-action]');
+  if (!button) return;
+
+  const { action, id } = button.dataset;
+
+  if (action === 'edit') {
+    const products = await loadProducts();
+    const product = products.find((p) => String(p.id) === id);
+    if (product) startEdit(product);
+    return;
+  }
+
+  if (action === 'delete') {
+    if (!window.confirm('Delete this product? This cannot be undone.')) return;
+
+    clearAlert();
+    try {
+      await api.delete(`/admin/products/${id}`);
+      showAlert('Product deleted successfully.', 'success');
+      await Promise.all([loadProducts(), loadStats()]);
+    } catch (err) {
+      showAlert(err instanceof ApiError ? err.message : 'Unable to delete this product.');
+    }
+  }
+});
+
+async function init() {
+  const user = await guardAdminPage();
+  if (!user) return;
+
+  try {
+    await refreshAll();
+  } catch (err) {
+    showAlert(err instanceof ApiError ? err.message : 'Unable to load dashboard data.');
+  }
+}
+
+init();

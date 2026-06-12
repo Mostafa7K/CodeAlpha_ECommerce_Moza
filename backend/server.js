@@ -2,10 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
+import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -35,6 +38,14 @@ app.use((req, res) => {
 
 // Centralized error handler
 app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ message: err.message });
+  }
+
+  if (err && err.message === 'Only image files are allowed.') {
+    return res.status(400).json({ message: err.message });
+  }
+
   console.error('Unhandled error:', err);
   res.status(500).json({ message: 'An unexpected error occurred.' });
 });

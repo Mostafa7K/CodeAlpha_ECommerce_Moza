@@ -1429,3 +1429,127 @@ select:focus {
     height: 0.8rem;
   }
 }
+
+/* ---------------------------------------------------------------------- */
+/* Admin dashboard                                                         */
+/* ---------------------------------------------------------------------- */
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-stat-card .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-stat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: hsl(var(--muted-foreground));
+}
+
+.admin-stat-value {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel .card-content {
+  padding-top: 0.5rem;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  list-style: none;
+}
+
+.admin-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid hsl(var(--border));
+  font-size: 0.9rem;
+}
+
+.admin-list li:last-child {
+  border-bottom: none;
+}
+
+.admin-section-card {
+  margin-bottom: 1.5rem;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid hsl(var(--border));
+  vertical-align: middle;
+}
+
+.admin-table th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: hsl(var(--muted-foreground));
+}
+
+.admin-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: calc(var(--radius) * 0.6);
+  object-fit: cover;
+  display: block;
+}
+
+.admin-row-actions {
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.admin-muted {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.8rem;
+}
+
+.admin-empty {
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  padding: 1.5rem 0.6rem;
+}
