@@ -449,6 +449,60 @@ h1, h2, h3, h4 {
 .mobile-nav.open .mobile-nav-link:nth-child(4) { transition-delay: 0.16s; }
 
 /* ---------------------------------------------------------------------- */
+/* Back-to-top button                                                      */
+/* ---------------------------------------------------------------------- */
+
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  /* Hidden until the user scrolls down; fades and slides into view. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(1rem) scale(0.9);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease, background-color 0.2s ease;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  background: hsl(var(--moza-olive-green));
+  transform: translateY(-2px) scale(1.05);
+  outline: none;
+}
+
+.back-to-top svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+@media (max-width: 720px) {
+  .back-to-top {
+    width: 2.75rem;
+    height: 2.75rem;
+    bottom: 1.1rem;
+    right: 1.1rem;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
 /* Theme toggle                                                            */
 /* ---------------------------------------------------------------------- */
 

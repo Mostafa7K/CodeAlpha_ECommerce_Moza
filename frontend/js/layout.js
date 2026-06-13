@@ -192,6 +192,36 @@ function handleSamePageNav(event) {
   }
 }
 
+// Floating "back to top" button: appears once the page is scrolled down and
+// smooth-scrolls to the top when tapped. Lives on every page via the layout.
+function setupBackToTop() {
+  if (document.getElementById('back-to-top')) return;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.id = 'back-to-top';
+  button.className = 'back-to-top';
+  button.setAttribute('aria-label', 'Back to top');
+  button.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="5 12 12 5 19 12" />
+    </svg>
+  `;
+  document.body.appendChild(button);
+
+  button.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  const toggleVisibility = () => {
+    button.classList.toggle('visible', window.scrollY > 400);
+  };
+
+  window.addEventListener('scroll', toggleVisibility, { passive: true });
+  toggleVisibility();
+}
+
 function closeMobileNav() {
   const mobileNav = document.getElementById('mobile-nav');
   const toggle = document.getElementById('mobile-nav-toggle');
@@ -234,6 +264,7 @@ export function renderLayout() {
   updateCartBadge();
   updateUserMenu();
   initThemeToggle();
+  setupBackToTop();
 
   onCartChange(updateCartBadge);
 
