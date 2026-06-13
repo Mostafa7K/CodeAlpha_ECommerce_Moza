@@ -12,3 +12,9 @@ export function escapeHtml(value) {
   div.textContent = String(value ?? '');
   return div.innerHTML;
 }
+
+// Lightweight email format check so we can reject obviously invalid addresses
+// in the browser before making a network round-trip to the backend.
+export function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim());
+}

@@ -1,6 +1,7 @@
 // Login page — submits credentials to the API and redirects on success.
 
 import { login, ApiError } from './auth.js';
+import { isValidEmail } from './format.js';
 
 const form = document.getElementById('login-form');
 const alertEl = document.getElementById('form-alert');
@@ -28,6 +29,13 @@ form.addEventListener('submit', async (event) => {
 
   if (!email || !password) {
     showError('Please enter both your email and password.');
+    return;
+  }
+
+  // Validate the email format up front so a malformed address fails instantly
+  // instead of waiting on a backend round-trip.
+  if (!isValidEmail(email)) {
+    showError('Please enter a valid email address.');
     return;
   }
 
