@@ -20,6 +20,16 @@ const imageHint = document.getElementById('image-hint');
 const submitBtn = document.getElementById('product-submit-btn');
 const cancelBtn = document.getElementById('product-cancel-btn');
 
+const dropzone = document.getElementById('image-dropzone');
+const dropzonePrompt = document.getElementById('dropzone-prompt');
+const dropzonePreview = document.getElementById('dropzone-preview');
+const dropzonePreviewImg = document.getElementById('dropzone-preview-img');
+const dropzoneFilename = document.getElementById('dropzone-filename');
+const dropzoneRemove = document.getElementById('dropzone-remove');
+const imageError = document.getElementById('image-error');
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
 const productsTableBody = document.getElementById('products-table-body');
 const ordersTableBody = document.getElementById('orders-table-body');
 const statRevenue = document.getElementById('stat-revenue');
@@ -43,8 +53,8 @@ function resetForm() {
   formTitle.textContent = 'Add New Product';
   submitBtn.textContent = 'Add Product';
   cancelBtn.classList.add('hidden');
-  imageField.required = true;
   imageHint.textContent = 'Required for new products. JPG, PNG, or WEBP — optimized automatically.';
+  resetDropzone();
 }
 
 function startEdit(product) {
@@ -55,13 +65,126 @@ function startEdit(product) {
   stockField.value = product.stock_quantity;
   burnTimeField.value = product.burn_time;
   imageField.value = '';
-  imageField.required = false;
   imageHint.textContent = 'Leave empty to keep the current image.';
   formTitle.textContent = `Edit Product: ${product.name}`;
   submitBtn.textContent = 'Save Changes';
   cancelBtn.classList.remove('hidden');
+  resetDropzone();
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// --- Drag & drop image uploader -------------------------------------------
+
+let previewUrl = null;
+
+function showImageError(message) {
+  imageError.textContent = message;
+  imageError.classList.remove('hidden');
+  dropzone.classList.add('error');
+}
+
+function clearImageError() {
+  imageError.textContent = '';
+  imageError.classList.add('hidden');
+  dropzone.classList.remove('error');
+}
+
+function renderPreview(file) {
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
+  dropzonePreviewImg.src = previewUrl;
+  dropzoneFilename.textContent = file.name;
+  dropzonePrompt.classList.add('hidden');
+  dropzonePreview.classList.remove('hidden');
+}
+
+// Resets the uploader UI back to its empty prompt state. Assumes the file
+// input itself has already been cleared (e.g. by form.reset()).
+function resetDropzone() {
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
+  dropzonePreviewImg.src = '';
+  dropzoneFilename.textContent = '';
+  dropzonePreview.classList.add('hidden');
+  dropzonePrompt.classList.remove('hidden');
+  clearImageError();
+}
+
+// Validates a file, mirrors it onto the hidden <input> (so the existing
+// FormData submission picks it up under the `image` key multer expects),
+// and renders the preview.
+function processFile(file, { assignToInput = false } = {}) {
+  if (!file) return;
+
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    imageField.value = '';
+    resetDropzone();
+    showImageError('Unsupported file type. Please use a JPG, PNG, or WEBP image.');
+    return;
+  }
+
+  if (assignToInput) {
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    imageField.files = transfer.files;
+  }
+
+  clearImageError();
+  renderPreview(file);
+}
+
+// Clicking anywhere in the zone opens the native file picker. Ignore clicks
+// originating from the hidden input (it re-fires via .click()) and the
+// Remove button so we don't reopen the dialog.
+dropzone.addEventListener('click', (event) => {
+  if (event.target === imageField || event.target.closest('#dropzone-remove')) return;
+  imageField.click();
+});
+
+dropzone.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    imageField.click();
+  }
+});
+
+imageField.addEventListener('change', () => {
+  processFile(imageField.files[0]);
+});
+
+['dragenter', 'dragover'].forEach((type) => {
+  dropzone.addEventListener(type, (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    dropzone.classList.add('dragover');
+  });
+});
+
+['dragleave', 'dragend'].forEach((type) => {
+  dropzone.addEventListener(type, (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (type === 'dragleave' && dropzone.contains(event.relatedTarget)) return;
+    dropzone.classList.remove('dragover');
+  });
+});
+
+dropzone.addEventListener('drop', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  dropzone.classList.remove('dragover');
+
+  const file = event.dataTransfer?.files?.[0];
+  processFile(file, { assignToInput: true });
+});
+
+dropzoneRemove.addEventListener('click', (event) => {
+  event.stopPropagation();
+  imageField.value = '';
+  resetDropzone();
+});
 
 function renderProducts(products) {
   if (products.length === 0) {
@@ -158,6 +281,13 @@ form.addEventListener('submit', async (event) => {
   clearAlert();
 
   const id = idField.value;
+
+  // A new product must have an image; on edit it's optional (keeps existing).
+  if (!id && !imageField.files.length) {
+    showImageError('Please add a product image.');
+    return;
+  }
+
   const formData = new FormData(form);
 
   if (!imageField.files.length) {

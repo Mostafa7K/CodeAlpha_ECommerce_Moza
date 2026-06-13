@@ -1584,3 +1584,137 @@ select:focus {
   color: hsl(var(--muted-foreground));
   padding: 1.5rem 0.6rem;
 }
+
+/* ---------------------------------------------------------------------- */
+/* Drag & drop image uploader                                              */
+/* ---------------------------------------------------------------------- */
+
+.dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 2.25rem 1.5rem;
+  /* Soft cream surface (#F3EEE0) with a deep-olive dashed border (#4A5D3F). */
+  background-color: hsl(var(--moza-cream));
+  border: 2px dashed hsl(var(--moza-deep-olive) / 0.5);
+  border-radius: var(--radius);
+  color: hsl(var(--moza-deep-olive));
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropzone:hover,
+.dropzone:focus-visible {
+  border-color: hsl(var(--moza-deep-olive));
+  background-color: hsl(var(--moza-cream) / 0.65);
+  outline: none;
+}
+
+/* Clear visual feedback while a file is dragged over the zone. */
+.dropzone.dragover {
+  border-style: solid;
+  border-color: hsl(var(--moza-deep-olive));
+  background-color: hsl(var(--moza-olive-green) / 0.18);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.dropzone.error {
+  border-color: hsl(var(--destructive));
+  background-color: hsl(var(--destructive) / 0.06);
+}
+
+.dropzone-input {
+  display: none;
+}
+
+.dropzone-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+.dropzone-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: hsl(var(--moza-deep-olive));
+  opacity: 0.85;
+}
+
+.dropzone-title {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: hsl(var(--moza-deep-olive));
+}
+
+.dropzone-hint {
+  font-size: 0.78rem;
+  color: hsl(var(--moza-deep-olive) / 0.7);
+}
+
+.dropzone-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.dropzone-preview img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-sm);
+  background-color: #fff;
+}
+
+.dropzone-preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dropzone-filename {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Keep the uploader legible in dark mode while honouring the olive accent. */
+[data-theme="dark"] .dropzone {
+  background-color: hsl(var(--muted));
+  border-color: hsl(var(--moza-olive-green) / 0.6);
+  color: hsl(var(--foreground));
+}
+
+[data-theme="dark"] .dropzone:hover,
+[data-theme="dark"] .dropzone:focus-visible {
+  border-color: hsl(var(--moza-olive-green));
+  background-color: hsl(var(--muted) / 0.7);
+}
+
+[data-theme="dark"] .dropzone.dragover {
+  border-color: hsl(var(--moza-olive-green));
+  background-color: hsl(var(--moza-olive-green) / 0.15);
+}
+
+[data-theme="dark"] .dropzone-icon,
+[data-theme="dark"] .dropzone-title {
+  color: hsl(var(--moza-olive-green));
+}
+
+[data-theme="dark"] .dropzone-hint {
+  color: hsl(var(--muted-foreground));
+}

@@ -119,8 +119,28 @@
               </div>
               <div class="form-field">
                 <label for="product-image">Product Image</label>
-                <input type="file" id="product-image" name="image" accept="image/*" />
-                <span class="form-hint" id="image-hint">Required for new products. JPG, PNG, or WEBP — optimized automatically.</span>
+                <div class="dropzone" id="image-dropzone" role="button" tabindex="0" aria-label="Upload product image — drag and drop or click to browse">
+                  <input type="file" id="product-image" name="image" accept="image/jpeg,image/png,image/webp" class="dropzone-input" />
+
+                  <div class="dropzone-prompt" id="dropzone-prompt">
+                    <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span class="dropzone-title">Drag &amp; drop your candle image here or click to browse</span>
+                    <span class="dropzone-hint" id="image-hint">Required for new products. JPG, PNG, or WEBP — optimized automatically.</span>
+                  </div>
+
+                  <div class="dropzone-preview hidden" id="dropzone-preview">
+                    <img id="dropzone-preview-img" src="" alt="Selected image preview" />
+                    <div class="dropzone-preview-meta">
+                      <span class="dropzone-filename" id="dropzone-filename"></span>
+                      <button type="button" class="btn btn-outline btn-sm" id="dropzone-remove">Remove</button>
+                    </div>
+                  </div>
+                </div>
+                <span class="form-error hidden" id="image-error"></span>
               </div>
               <div class="admin-form-actions">
                 <button type="submit" class="btn btn-primary" id="product-submit-btn">Add Product</button>
