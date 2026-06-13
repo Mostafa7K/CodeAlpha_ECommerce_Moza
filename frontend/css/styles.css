@@ -1718,3 +1718,90 @@ select:focus {
 [data-theme="dark"] .dropzone-hint {
   color: hsl(var(--muted-foreground));
 }
+
+/* ---------------------------------------------------------------------- */
+/* Notification modal                                                      */
+/* ---------------------------------------------------------------------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: hsl(var(--foreground) / 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: modal-fade 0.2s ease;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 2rem 1.75rem 1.75rem;
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  animation: modal-pop 0.22s ease;
+}
+
+.modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+}
+
+.modal-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.modal-icon.success {
+  background-color: hsl(var(--success) / 0.15);
+  color: hsl(var(--success));
+}
+
+.modal-icon.error {
+  background-color: hsl(var(--destructive) / 0.12);
+  color: hsl(var(--destructive));
+}
+
+.modal-message {
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+}
+
+.modal-box .btn {
+  min-width: 7rem;
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal-box {
+    animation: none;
+  }
+}

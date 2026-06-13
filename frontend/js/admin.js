@@ -5,7 +5,10 @@ import { guardAdminPage } from './admin-guard.js';
 import { api, ApiError } from './api.js';
 import { formatCurrency, escapeHtml } from './format.js';
 
-const alertEl = document.getElementById('admin-alert');
+const modal = document.getElementById('admin-modal');
+const modalIcon = document.getElementById('admin-modal-icon');
+const modalText = document.getElementById('admin-modal-text');
+const modalClose = document.getElementById('admin-modal-close');
 
 const form = document.getElementById('product-form');
 const formTitle = document.getElementById('product-form-title');
@@ -38,14 +41,32 @@ const statLowStock = document.getElementById('stat-low-stock');
 const lowStockList = document.getElementById('low-stock-list');
 const topSellingList = document.getElementById('top-selling-list');
 
+const MODAL_ICONS = {
+  success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+};
+
+// Shows a centered modal (with a blurred backdrop) instead of an inline banner.
 function showAlert(message, type = 'error') {
-  alertEl.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const variant = type === 'success' ? 'success' : 'error';
+  modalText.textContent = message;
+  modalIcon.className = `modal-icon ${variant}`;
+  modalIcon.innerHTML = MODAL_ICONS[variant];
+  modal.classList.remove('hidden');
+  modalClose.focus();
 }
 
 function clearAlert() {
-  alertEl.innerHTML = '';
+  modal.classList.add('hidden');
 }
+
+modalClose.addEventListener('click', clearAlert);
+modal.addEventListener('click', (event) => {
+  if (event.target === modal) clearAlert();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !modal.classList.contains('hidden')) clearAlert();
+});
 
 function resetForm() {
   form.reset();
@@ -70,7 +91,17 @@ function startEdit(product) {
   submitBtn.textContent = 'Save Changes';
   cancelBtn.classList.remove('hidden');
   resetDropzone();
-  form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  scrollToEditSection();
+}
+
+// Scrolls so the top of the edit card (including its "Edit Product" heading)
+// lands just below the sticky header, rather than hiding behind it.
+function scrollToEditSection() {
+  const card = form.closest('.admin-section-card') || form;
+  const header = document.querySelector('.site-header');
+  const headerOffset = header ? header.getBoundingClientRect().height : 0;
+  const top = card.getBoundingClientRect().top + window.scrollY - headerOffset - 16;
+  window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
 }
 
 // --- Drag & drop image uploader -------------------------------------------

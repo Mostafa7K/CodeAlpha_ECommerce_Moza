@@ -34,8 +34,6 @@
           <p>Manage products, review orders, and track sales performance.</p>
         </div>
 
-        <div id="admin-alert"></div>
-
         <!-- Sales Analytics -->
         <div class="admin-stats-grid" id="admin-stats">
           <div class="card admin-stat-card">
@@ -212,6 +210,15 @@
   </main>
 
   <footer id="site-footer" class="site-footer"></footer>
+
+  <!-- Centered notification modal (errors & confirmations) -->
+  <div class="modal-overlay hidden" id="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-text">
+    <div class="modal-box">
+      <div class="modal-icon" id="admin-modal-icon" aria-hidden="true"></div>
+      <p class="modal-message" id="admin-modal-text"></p>
+      <button type="button" class="btn btn-primary" id="admin-modal-close">OK</button>
+    </div>
+  </div>
 
   <script type="module" src="js/layout.js"></script>
   <script type="module" src="js/admin.js"></script>
