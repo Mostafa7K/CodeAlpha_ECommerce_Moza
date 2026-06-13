@@ -13,10 +13,34 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const CLIENT_ORIGIN = process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN || 'http://127.0.0.1:5500';
+
+// Credentialed CORS (cookies) requires an exact origin match — wildcards are
+// not allowed. We accept an allowlist so the deployed frontend, local dev, and
+// any future domain changes all work. FRONTEND_URL / CLIENT_ORIGIN may each be
+// a single origin or a comma-separated list.
+const DEFAULT_ORIGINS = [
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'https://moza-candles-lb.vercel.app'
+];
+
+const allowedOrigins = new Set(
+  [process.env.FRONTEND_URL, process.env.CLIENT_ORIGIN, ...DEFAULT_ORIGINS]
+    .filter(Boolean)
+    .flatMap((value) => value.split(',').map((origin) => origin.trim()))
+    .filter(Boolean)
+);
 
 app.use(cors({
-  origin: CLIENT_ORIGIN,
+  origin(origin, callback) {
+    // Allow non-browser / same-origin requests (no Origin header) and any
+    // explicitly allowlisted frontend origin. Unknown origins are denied
+    // silently (no CORS headers) rather than throwing a noisy 500.
+    if (!origin || allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json());
