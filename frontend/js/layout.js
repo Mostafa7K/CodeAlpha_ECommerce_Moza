@@ -125,6 +125,46 @@ async function updateUserMenu() {
   }
 }
 
+// Treat "/" and "/index.html" as the same page so the home link doesn't
+// trigger a full reload when the user is already on the home page.
+function normalizePath(pathname) {
+  return pathname.replace(/\/index\.html$/, '/') || '/';
+}
+
+// Intercept clicks on links that point to the page we're already on. Instead
+// of letting the browser do a costly full reload, smooth-scroll in place.
+function handleSamePageNav(event) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    return;
+  }
+
+  const link = event.target.closest('a[href]');
+  if (!link || link.target === '_blank') return;
+
+  const url = new URL(link.href, window.location.href);
+  if (url.origin !== window.location.origin) return;
+  if (normalizePath(url.pathname) !== normalizePath(window.location.pathname)) return;
+
+  event.preventDefault();
+
+  if (url.hash && url.hash !== '#') {
+    const target = document.querySelector(url.hash);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+      return;
+    }
+  }
+
+  // No hash (Home / brand logo) → return to the top and drop any stale hash.
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+}
+
+let samePageNavBound = false;
+
 export function renderLayout() {
   const header = document.getElementById('site-header');
   const footer = document.getElementById('site-footer');
@@ -137,6 +177,11 @@ export function renderLayout() {
   initThemeToggle();
 
   onCartChange(updateCartBadge);
+
+  if (!samePageNavBound) {
+    document.addEventListener('click', handleSamePageNav);
+    samePageNavBound = true;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', renderLayout);
