@@ -252,12 +252,12 @@ function renderOrders(orders) {
     const items = order.items.map((item) => `${item.quantity} × ${escapeHtml(item.productName)}`).join('<br />');
     return `
       <tr>
-        <td>#${order.id}</td>
-        <td>${escapeHtml(order.customerName)}<br /><span class="admin-muted">${escapeHtml(order.customerEmail)}</span></td>
-        <td>${items}</td>
-        <td>${formatCurrency(order.totalAmount)}</td>
-        <td><span class="badge badge-outline">${escapeHtml(order.status)}</span></td>
-        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+        <td class="cell-order" data-label="Order">#${order.id}</td>
+        <td data-label="Customer">${escapeHtml(order.customerName)}<br /><span class="admin-muted">${escapeHtml(order.customerEmail)}</span></td>
+        <td data-label="Items">${items}</td>
+        <td data-label="Total">${formatCurrency(order.totalAmount)}</td>
+        <td data-label="Status"><span class="badge badge-outline">${escapeHtml(order.status)}</span></td>
+        <td data-label="Date">${new Date(order.createdAt).toLocaleDateString()}</td>
       </tr>
     `;
   }).join('');
