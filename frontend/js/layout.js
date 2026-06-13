@@ -13,13 +13,27 @@ const NAV_LINKS = [
   { href: 'cart.html', label: 'Cart' }
 ];
 
+// A small candle illustration used on the mobile menu toggle.
+const CANDLE_ICON = `
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path class="candle-flame" d="M12 2c1.6 1.9 2.6 3.2 2.6 4.7a2.6 2.6 0 0 1-5.2 0C9.4 5.2 10.4 3.9 12 2z" stroke="none" />
+    <line x1="12" y1="7" x2="12" y2="9.5" />
+    <rect x="8" y="9.5" width="8" height="12" rx="1.6" />
+  </svg>
+`;
+
+function navLinkMarkup(currentPage, className) {
+  return NAV_LINKS.map((link) => {
+    const isActive = link.href.startsWith(currentPage) && currentPage !== '';
+    return `<a href="${link.href}" class="${className} ${isActive ? 'active' : ''}">${link.label}</a>`;
+  }).join('');
+}
+
 function buildHeader() {
   const currentPage = document.body.dataset.page || '';
 
-  const links = NAV_LINKS.map((link) => {
-    const isActive = link.href.startsWith(currentPage) && currentPage !== '';
-    return `<a href="${link.href}" class="${isActive ? 'active' : ''}">${link.label}</a>`;
-  }).join('');
+  const links = navLinkMarkup(currentPage, '');
+  const mobileLinks = navLinkMarkup(currentPage, 'mobile-nav-link');
 
   return `
     <div class="container navbar">
@@ -42,6 +56,15 @@ function buildHeader() {
           <span class="cart-badge hidden" id="cart-badge">0</span>
         </a>
       </div>
+    </div>
+
+    <div class="mobile-nav" id="mobile-nav">
+      <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav-menu">
+        ${CANDLE_ICON}
+      </button>
+      <nav class="mobile-nav-menu" id="mobile-nav-menu">
+        ${mobileLinks}
+      </nav>
     </div>
   `;
 }
@@ -97,10 +120,16 @@ async function updateUserMenu() {
 
   const user = await getCurrentUser();
 
-  if (user && navLinks && ADMIN_EMAILS.includes(user.email?.toLowerCase())) {
+  if (user && ADMIN_EMAILS.includes(user.email?.toLowerCase())) {
     const currentPage = document.body.dataset.page || '';
     const isActive = currentPage.startsWith('admin.html');
-    navLinks.insertAdjacentHTML('beforeend', `<a href="admin.html" class="${isActive ? 'active' : ''}">Admin</a>`);
+    if (navLinks) {
+      navLinks.insertAdjacentHTML('beforeend', `<a href="admin.html" class="${isActive ? 'active' : ''}">Admin</a>`);
+    }
+    const mobileMenu = document.getElementById('mobile-nav-menu');
+    if (mobileMenu) {
+      mobileMenu.insertAdjacentHTML('beforeend', `<a href="admin.html" class="mobile-nav-link ${isActive ? 'active' : ''}">Admin</a>`);
+    }
   }
 
   if (user) {
@@ -163,6 +192,36 @@ function handleSamePageNav(event) {
   }
 }
 
+function closeMobileNav() {
+  const mobileNav = document.getElementById('mobile-nav');
+  const toggle = document.getElementById('mobile-nav-toggle');
+  if (!mobileNav) return;
+  mobileNav.classList.remove('open');
+  if (toggle) {
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open navigation menu');
+  }
+}
+
+// Toggle the candle menu; close it on outside clicks, link taps, and Escape.
+function handleMobileNav(event) {
+  const toggle = event.target.closest('#mobile-nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  if (!mobileNav) return;
+
+  if (toggle) {
+    const willOpen = !mobileNav.classList.contains('open');
+    mobileNav.classList.toggle('open', willOpen);
+    toggle.setAttribute('aria-expanded', String(willOpen));
+    toggle.setAttribute('aria-label', willOpen ? 'Close navigation menu' : 'Open navigation menu');
+    return;
+  }
+
+  if (event.target.closest('.mobile-nav-link') || !event.target.closest('#mobile-nav')) {
+    closeMobileNav();
+  }
+}
+
 let samePageNavBound = false;
 
 export function renderLayout() {
@@ -180,6 +239,10 @@ export function renderLayout() {
 
   if (!samePageNavBound) {
     document.addEventListener('click', handleSamePageNav);
+    document.addEventListener('click', handleMobileNav);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMobileNav();
+    });
     samePageNavBound = true;
   }
 }
