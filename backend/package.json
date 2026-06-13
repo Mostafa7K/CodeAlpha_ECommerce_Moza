@@ -8,7 +8,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "db:init": "node db/init.js",
-    "db:seed-admins": "node db/seed-admins.js"
+    "db:seed-admins": "node db/seed-admins.js",
+    "db:fix-order-ids": "node db/fix-order-ids.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
