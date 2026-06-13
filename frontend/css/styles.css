@@ -503,6 +503,136 @@ h1, h2, h3, h4 {
 }
 
 /* ---------------------------------------------------------------------- */
+/* Global connectivity / server-error banner                               */
+/* ---------------------------------------------------------------------- */
+
+.global-banner {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: min(92vw, 32rem);
+  padding: 0.75rem 1rem;
+  margin-top: 0.85rem;
+  border: 1px solid hsl(var(--destructive) / 0.35);
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow: var(--shadow-lg);
+  font-size: 0.9rem;
+  /* Hidden by default; slides down from the top when triggered. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-1.5rem);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.global-banner.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.global-banner svg {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: hsl(var(--destructive));
+}
+
+.global-banner-text {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.global-banner-close {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: hsl(var(--muted-foreground));
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.15rem;
+  transition: color 0.2s ease;
+}
+
+.global-banner-close:hover {
+  color: hsl(var(--foreground));
+}
+
+/* ---------------------------------------------------------------------- */
+/* Custom 404 / error page                                                 */
+/* ---------------------------------------------------------------------- */
+
+.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 9rem);
+  padding: 4rem 1.5rem;
+}
+
+.error-content {
+  max-width: 32rem;
+  text-align: center;
+}
+
+.error-candle {
+  width: 96px;
+  height: auto;
+  margin: 0 auto 1.75rem;
+  color: hsl(var(--moza-deep-olive));
+}
+
+.error-candle .candle-flame {
+  fill: hsl(var(--moza-flame-gold));
+  transform-origin: center bottom;
+  animation: error-flicker 2.4s ease-in-out infinite;
+}
+
+@keyframes error-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  45% { opacity: 0.78; transform: scale(0.94) translateY(1px); }
+  70% { opacity: 0.92; transform: scale(1.03); }
+}
+
+.error-code {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(3.5rem, 12vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: hsl(var(--moza-deep-olive));
+  margin-bottom: 0.5rem;
+}
+
+.error-title {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 1.85rem);
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.75rem;
+}
+
+.error-message {
+  font-size: 1.02rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.55;
+  margin-bottom: 2rem;
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Theme toggle                                                            */
 /* ---------------------------------------------------------------------- */
 

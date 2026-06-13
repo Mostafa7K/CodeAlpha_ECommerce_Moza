@@ -31,23 +31,25 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 
-// 404 handler
+// 404 handler — clean JSON for any unknown API route instead of an HTML trace.
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found.' });
+  res.status(404).json({ success: false, message: 'Requested API endpoint not found.' });
 });
 
-// Centralized error handler
+// Global, catch-all error handler. The full stack is logged server-side only;
+// the client always receives a generic message so no internal details, file
+// paths, or database credentials can leak in the response.
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ success: false, message: err.message });
   }
 
   if (err && err.message === 'Only image files are allowed.') {
-    return res.status(400).json({ message: err.message });
+    return res.status(400).json({ success: false, message: err.message });
   }
 
-  console.error('Unhandled error:', err);
-  res.status(500).json({ message: 'An unexpected error occurred.' });
+  console.error('Internal Server Error:', err?.stack || err);
+  res.status(500).json({ success: false, message: 'An unexpected database or server error occurred.' });
 });
 
 app.listen(PORT, () => {

@@ -192,6 +192,53 @@ function handleSamePageNav(event) {
   }
 }
 
+// Slim, dismissible banner shown when the API client reports a connectivity or
+// server problem. It overlays the top of the page so a failed request never
+// freezes the UI or blows away the page content.
+let bannerHideTimer = null;
+
+function setupErrorBanner() {
+  if (document.getElementById('global-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'global-banner';
+  banner.className = 'global-banner';
+  banner.setAttribute('role', 'alert');
+  banner.setAttribute('aria-live', 'assertive');
+  document.body.appendChild(banner);
+
+  window.addEventListener('moza:server-error', (event) => {
+    showGlobalBanner(event.detail?.message);
+  });
+}
+
+function showGlobalBanner(message) {
+  const banner = document.getElementById('global-banner');
+  if (!banner) return;
+
+  banner.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+    <span class="global-banner-text">${message || 'Something went wrong. Please try again.'}</span>
+    <button type="button" class="global-banner-close" aria-label="Dismiss">&times;</button>
+  `;
+
+  banner.querySelector('.global-banner-close')?.addEventListener('click', hideGlobalBanner);
+
+  banner.classList.add('visible');
+
+  // Auto-dismiss after a while so it stays non-intrusive.
+  clearTimeout(bannerHideTimer);
+  bannerHideTimer = setTimeout(hideGlobalBanner, 8000);
+}
+
+function hideGlobalBanner() {
+  document.getElementById('global-banner')?.classList.remove('visible');
+}
+
 // Floating "back to top" button: appears once the page is scrolled down and
 // smooth-scrolls to the top when tapped. Lives on every page via the layout.
 function setupBackToTop() {
@@ -265,6 +312,7 @@ export function renderLayout() {
   updateUserMenu();
   initThemeToggle();
   setupBackToTop();
+  setupErrorBanner();
 
   onCartChange(updateCartBadge);
 

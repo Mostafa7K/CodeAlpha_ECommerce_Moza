@@ -14,6 +14,31 @@ class ApiError extends Error {
   }
 }
 
+// Broadcast a connectivity/server problem so the shared layout can surface a
+// non-intrusive banner. Decoupled via a window event so this client stays
+// DOM-free and any page that loads the layout reacts automatically.
+function notifyServerIssue(message) {
+  if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+    window.dispatchEvent(new CustomEvent('moza:server-error', { detail: { message } }));
+  }
+}
+
+const OFFLINE_MESSAGE =
+  'We can’t reach the Moza server right now. It may be waking up — please try again in a moment.';
+const SERVER_ERROR_MESSAGE =
+  'Something went wrong on our end. Please try again shortly.';
+
+// Perform a fetch, converting a total network failure (DNS, CORS, or a sleeping
+// backend) into a clean ApiError instead of an unhandled rejection.
+async function safeFetch(url, init) {
+  try {
+    return await fetch(url, init);
+  } catch (networkError) {
+    notifyServerIssue(OFFLINE_MESSAGE);
+    throw new ApiError(OFFLINE_MESSAGE, 0);
+  }
+}
+
 async function handleResponse(response) {
   let data = null;
   const contentType = response.headers.get('content-type') || '';
@@ -22,6 +47,11 @@ async function handleResponse(response) {
   }
 
   if (!response.ok) {
+    // Server-side faults get a global banner; client errors (4xx) are left to
+    // the calling page to handle inline (e.g. "invalid password").
+    if (response.status >= 500) {
+      notifyServerIssue(data?.message || SERVER_ERROR_MESSAGE);
+    }
     const message = data?.message || `Request failed with status ${response.status}`;
     throw new ApiError(message, response.status);
   }
@@ -30,7 +60,7 @@ async function handleResponse(response) {
 }
 
 async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await safeFetch(`${API_BASE_URL}${path}`, {
     method: options.method || 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -44,7 +74,7 @@ async function request(path, options = {}) {
 }
 
 async function upload(path, formData, method = 'POST') {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await safeFetch(`${API_BASE_URL}${path}`, {
     method,
     credentials: 'include',
     body: formData

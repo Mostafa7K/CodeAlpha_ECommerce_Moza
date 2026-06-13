@@ -5,3 +5,13 @@ Thumbs.db
 # Editor directories
 .vscode/
 .idea/
+
+# Dependencies
+node_modules/
+
+# Environment / secrets (never commit real credentials, e.g. TiDB)
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
