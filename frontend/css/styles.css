@@ -1839,6 +1839,10 @@ select:focus {
     gap: 1rem;
     border-top: 1px solid hsl(var(--border) / 0.7);
     text-align: right;
+    /* Long values (e.g. an email address) shrink and wrap inside the card
+       instead of overflowing past its right edge. */
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .admin-table-orders td::before {
@@ -1850,6 +1854,15 @@ select:focus {
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: hsl(var(--muted-foreground));
+  }
+
+  .admin-table-orders td > * {
+    min-width: 0;
+  }
+
+  .admin-table-orders .order-customer {
+    display: block;
+    text-align: right;
   }
 
   /* Order id sits at the top as the card heading, no label, no divider. */

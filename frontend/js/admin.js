@@ -253,7 +253,7 @@ function renderOrders(orders) {
     return `
       <tr>
         <td class="cell-order" data-label="Order">#${order.id}</td>
-        <td data-label="Customer">${escapeHtml(order.customerName)}<br /><span class="admin-muted">${escapeHtml(order.customerEmail)}</span></td>
+        <td data-label="Customer"><span class="order-customer">${escapeHtml(order.customerName)}<br /><span class="admin-muted">${escapeHtml(order.customerEmail)}</span></span></td>
         <td data-label="Items">${items}</td>
         <td data-label="Total">${formatCurrency(order.totalAmount)}</td>
         <td data-label="Status"><span class="badge badge-outline">${escapeHtml(order.status)}</span></td>
