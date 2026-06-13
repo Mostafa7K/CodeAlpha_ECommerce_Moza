@@ -225,14 +225,14 @@ function renderProducts(products) {
 
   productsTableBody.innerHTML = products.map((product) => `
     <tr>
-      <td><img class="admin-thumb" src="${escapeHtml(product.image_url)}" alt="" /></td>
-      <td>${escapeHtml(product.name)}</td>
-      <td>${formatCurrency(product.price)}</td>
-      <td>${product.stock_quantity <= 5
+      <td class="cell-thumb"><img class="admin-thumb" src="${escapeHtml(product.image_url)}" alt="" /></td>
+      <td class="cell-name" data-label="Name">${escapeHtml(product.name)}</td>
+      <td data-label="Price">${formatCurrency(product.price)}</td>
+      <td data-label="Stock">${product.stock_quantity <= 5
         ? `<span class="badge badge-warning">${product.stock_quantity}</span>`
         : product.stock_quantity}</td>
-      <td>${escapeHtml(product.burn_time)}</td>
-      <td>
+      <td data-label="Burn Time">${escapeHtml(product.burn_time)}</td>
+      <td class="cell-actions">
         <div class="admin-row-actions">
           <button class="btn btn-outline btn-sm" data-action="edit" data-id="${product.id}">Edit</button>
           <button class="btn btn-destructive btn-sm" data-action="delete" data-id="${product.id}">Delete</button>
